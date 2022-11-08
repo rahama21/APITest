@@ -64,6 +64,8 @@ newman run “Collection Link” -e EnvironmentName.json -r cli,htmlextra
 <img width="954" alt="Screenshot 2022-11-08 122852" src="https://user-images.githubusercontent.com/32101980/200618061-d8a13347-40ea-4d1b-80f6-fadcad4d6cf2.png">
 <img width="960" alt="Screenshot 2022-11-08 123132" src="https://user-images.githubusercontent.com/32101980/200618118-09e90e97-3c4c-43b0-99b9-a59ea182b8bf.png">
 
+#Html report
+
 
 <img width="944" alt="Screenshot 2022-11-08 123215" src="https://user-images.githubusercontent.com/32101980/200618160-70a1fb0b-620b-4c3b-9e68-99298cfcfd03.png">
 <img width="939" alt="Screenshot 2022-11-08 221047" src="https://user-images.githubusercontent.com/32101980/200618199-6d9fe68f-b780-4685-ab85-a12e8ed0a456.png">
