@@ -1,7 +1,5 @@
 # APITest
 
-API test
-
 Website link : https://restful-booker.herokuapp.com
 
 Requirements
@@ -15,6 +13,8 @@ Node JS Install (Link: https://nodejs.org/en/)
 Environment Variable Setup
 
 Postman (Link: https://www.postman.com/)
+
+
 Method:
 
         1. Post
@@ -35,6 +35,8 @@ API :
 
         4. https://restful-booker.herokuapp.com/booking/1
 Newman 
+
+
 Install Command: npm install -g newman
 
 
@@ -42,6 +44,8 @@ Run Command:
 
 
 newman run “Path/CollectionName.json” -e Path/EnvironmentName.json
+
+
 newman run “Collection Link” -e “Path”/EnvironmentName.json
 
 Report:
@@ -54,7 +58,11 @@ Run Command:
 
 
 newman run “Collection Link” -e EnvironmentName.json -r cli,html
+
+
 newman run “Collection Link” -e EnvironmentName.json -r cli,htmlextra
+
+
 
 ##Screenshots 
 
