@@ -1,0 +1,484 @@
+{
+  "info": {
+    "_postman_id": "86f33a56-5415-4416-90dc-fec07038a941",
+    "name": "Inventory API Testing – Portfolio",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23651672",
+    "_collection_link": "https://go.postman.co/collection/23651672-86f33a56-5415-4416-90dc-fec07038a941?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Delivery Order Status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response is successful\", function () {\r",
+              "    const response = pm.response.json();\r",
+              "\r",
+              "    pm.expect(response.isSuccess).to.eql(true);\r",
+              "    pm.expect(response.statusCode).to.eql(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Delivery order statuses are returned\", function () {\r",
+              "    const response = pm.response.json();\r",
+              "\r",
+              "    pm.expect(response.data).to.be.an(\"array\");\r",
+              "    pm.expect(response.data.length).to.be.greaterThan(0);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Storeid",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "key": "Sxsrf",
+            "value": "{{Sxsrf}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/inventory/api/v1/CommonDropdown/GetDeliveryOrderStatusDropdown/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "inventory",
+            "api",
+            "v1",
+            "CommonDropdown",
+            "GetDeliveryOrderStatusDropdown",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Order By DO Code",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Guard: only run if response is successful",
+              "if (pm.response.code !== 200) {",
+              "    console.error(\"Request failed with status:\", pm.response.code, pm.response.text());",
+              "    pm.test(\"Response status is 200\", function () {",
+              "        pm.response.to.have.status(200);",
+              "    });",
+              "    return;",
+              "}",
+              "",
+              "let res = pm.response.json();",
+              "",
+              "// Guard: ensure res.data exists",
+              "if (!res.data) {",
+              "    console.error(\"Response does not contain 'data':\", JSON.stringify(res));",
+              "    pm.test(\"Response contains data\", function () {",
+              "        pm.expect(res.data).to.not.be.undefined;",
+              "    });",
+              "    return;",
+              "}",
+              "",
+              "let order = res.data;",
+              "",
+              "// Guard: ensure deliveryOrderDetails exists and is non-empty",
+              "if (!order.deliveryOrderDetails || order.deliveryOrderDetails.length === 0) {",
+              "    console.error(\"deliveryOrderDetails is missing or empty\");",
+              "    pm.test(\"deliveryOrderDetails exists and is non-empty\", function () {",
+              "        pm.expect(order.deliveryOrderDetails).to.be.an(\"array\").that.is.not.empty;",
+              "    });",
+              "    return;",
+              "}",
+              "",
+              "let detail = order.deliveryOrderDetails[0];",
+              "",
+              "// Guard: ensure productBatches exists and is non-empty",
+              "if (!detail.productBatches || detail.productBatches.length === 0) {",
+              "    console.error(\"productBatches is missing or empty\");",
+              "    pm.test(\"productBatches exists and is non-empty\", function () {",
+              "        pm.expect(detail.productBatches).to.be.an(\"array\").that.is.not.empty;",
+              "    });",
+              "    return;",
+              "}",
+              "",
+              "let batch = detail.productBatches[0];",
+              "",
+              "// Delivery Order",
+              "pm.collectionVariables.set(\"doId\", order.id);",
+              "pm.collectionVariables.set(\"doCode\", order.doCode);",
+              "",
+              "// Product Details",
+              "pm.collectionVariables.set(\"doDetailId\", detail.id);",
+              "pm.collectionVariables.set(\"productId\", detail.productId);",
+              "pm.collectionVariables.set(\"productVariantId\", detail.productVariantId);",
+              "pm.collectionVariables.set(\"unitOfMeasurementId\", detail.unitOfMeasurementId);",
+              "",
+              "// Package Information",
+              "pm.collectionVariables.set(\"packageWeightInKg\", detail.packageWeightInKg);",
+              "pm.collectionVariables.set(\"packageHeightInCm\", detail.packageHeightInCm);",
+              "pm.collectionVariables.set(\"packageWidthInCm\", detail.packageWidthInCm);",
+              "pm.collectionVariables.set(\"packageLengthInCm\", detail.packageLengthInCm);",
+              "",
+              "// Batch Information",
+              "pm.collectionVariables.set(\"warehouseMappingId\", batch.WarehouseMappingId);",
+              "pm.collectionVariables.set(\"batchId\", batch.BatchId);",
+              "pm.collectionVariables.set(\"productStackId\", batch.StockStackId);",
+              "pm.collectionVariables.set(\"productStackBatchDetailsId\", batch.StockStackBatchDetailsId);",
+              "pm.collectionVariables.set(\"stackQuantity\", batch.StackQuantity);",
+              "pm.collectionVariables.set(\"uin\", batch.UIN);",
+              "",
+              "// Optional: Print values in Postman Console",
+              "console.log(\"Variables Saved Successfully\");",
+              "console.log({",
+              "    doCode: order.doCode,",
+              "    doId: order.id,",
+              "    doDetailId: detail.id,",
+              "    productId: detail.productId,",
+              "    productVariantId: detail.productVariantId,",
+              "    unitOfMeasurementId: detail.unitOfMeasurementId,",
+              "    warehouseMappingId: batch.WarehouseMappingId,",
+              "    batchId: batch.BatchId,",
+              "    productStackId: batch.StockStackId,",
+              "    productStackBatchDetailsId: batch.StockStackBatchDetailsId,",
+              "    stackQuantity: batch.StackQuantity,",
+              "    uin: batch.UIN",
+              "});",
+              "",
+              "pm.test(\"Variables set successfully\", function () {",
+              "    pm.expect(order.id).to.not.be.undefined;",
+              "    pm.expect(detail.id).to.not.be.undefined;",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Storeid",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "key": "Sxsrf",
+            "value": "{{Sxsrf}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json, text/plain, */*",
+            "type": "text"
+          },
+          {
+            "key": "Origin",
+            "value": "https://pre-prod-inventory.cartup.com",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "Referer",
+            "value": "https://pre-prod-inventory.cartup.com/",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "Sec-Fetch-Site",
+            "value": "",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/inventory/api/v1/DeliveryOrder/orderPackagingbyCode/{{doCode}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "inventory",
+            "api",
+            "v1",
+            "DeliveryOrder",
+            "orderPackagingbyCode",
+            "{{doCode}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Packaging Material",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let res = pm.response.json();\r",
+              "\r",
+              "let material = res.data.find(m => m.id === 2);\r",
+              "\r",
+              "pm.collectionVariables.set(\"packagingMaterialId\", material.id);\r",
+              "pm.collectionVariables.set(\"unitPrice\", material.unitPrice);\r",
+              "pm.collectionVariables.set(\"uom\", material.uom);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Storeid",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "key": "Sxsrf",
+            "value": "{{Sxsrf}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/inventory/api/v1/CommonDropdown/PackagingMaterialDropdown",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "inventory",
+            "api",
+            "v1",
+            "CommonDropdown",
+            "PackagingMaterialDropdown"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order Packaging",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Storeid",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "key": "Sxsrf",
+            "value": "{{Sxsrf}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[\r\n  {\r\n    \"doCode\": \"{{doCode}}\",\r\n    \"doId\": {{doId}},\r\n    \"packagingDate\": \"{{$isoTimestamp}}\",\r\n    \"packagingStaffId\": 114,\r\n    \"orderPackagingDetails\": [\r\n      {\r\n        \"doDetailId\": {{doDetailId}},\r\n        \"productId\": {{productId}},\r\n        \"productVariantId\": {{productVariantId}},\r\n        \"unitOfMeasurementId\": {{unitOfMeasurementId}},\r\n        \"quantity\": 1,\r\n        \"packageWeightInKg\": {{packageWeightInKg}},\r\n        \"packageHeightInCm\": {{packageHeightInCm}},\r\n        \"packageWidthInCm\": {{packageWidthInCm}},\r\n        \"packageLengthInCm\": {{packageLengthInCm}},\r\n        \"orderPackagingBatchDetails\": [\r\n          {\r\n            \"warehouseMappingId\": {{warehouseMappingId}},\r\n            \"batchId\": {{batchId}},\r\n            \"quantity\": 1,\r\n            \"hasSerialNo\": false,\r\n            \"orderPackagingSerialNumbers\": null,\r\n           \"StackQuantity\": {{stackQuantity}},\r\n            \"productStackId\": {{productStackId}},\r\n            \"productStackBatchDetailsId\": {{productStackBatchDetailsId}},\r\n            \"uin\": \"{{uin}}\"\r\n          }\r\n        ]\r\n      }\r\n    ],\r\n    \"orderPackagingMaterials\": [\r\n      {\r\n        \"packagingMaterialId\": {{packagingMaterialId}},\r\n        \"quantity\": 1,\r\n        \"unitPrice\": {{unitPrice}},\r\n        \"remarks\": \"\",\r\n        \"uom\": \"{{uom}}\"\r\n      }\r\n    ]\r\n  }\r\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/inventory/api/v1/OrderPackaging/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "inventory",
+            "api",
+            "v1",
+            "OrderPackaging",
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "doCode",
+      "value": ""
+    },
+    {
+      "key": "doId",
+      "value": ""
+    },
+    {
+      "key": "doDetailId",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "productVariantId",
+      "value": ""
+    },
+    {
+      "key": "unitOfMeasurementId",
+      "value": ""
+    },
+    {
+      "key": "packageWeightInKg",
+      "value": ""
+    },
+    {
+      "key": "packageHeightInCm",
+      "value": ""
+    },
+    {
+      "key": "packageWidthInCm",
+      "value": ""
+    },
+    {
+      "key": "packageLengthInCm",
+      "value": ""
+    },
+    {
+      "key": "warehouseMappingId",
+      "value": ""
+    },
+    {
+      "key": "batchId",
+      "value": ""
+    },
+    {
+      "key": "productStackId",
+      "value": ""
+    },
+    {
+      "key": "productStackBatchDetailsId",
+      "value": ""
+    },
+    {
+      "key": "uin",
+      "value": ""
+    },
+    {
+      "key": "packagingMaterialId",
+      "value": ""
+    },
+    {
+      "key": "unitPrice",
+      "value": ""
+    },
+    {
+      "key": "uom",
+      "value": "Pcs"
+    },
+    {
+      "key": "stackQuantity",
+      "value": ""
+    }
+  ]
+}
